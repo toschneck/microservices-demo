@@ -15,52 +15,44 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: cartservice
+  name: emailservice
 spec:
   template:
     metadata:
       labels:
-        app: cartservice
+        app: emailservice
     spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/microservices-demo-app/cartservice
+        image: gcr.io/loodse-sc-test/emailservice
         ports:
-        - containerPort: 7070
-        env:
-        - name: REDIS_ADDR
-          value: "redis-cart:6379"
-        - name: PORT
-          value: "7070"
-        - name: LISTEN_ADDR
-          value: "0.0.0.0"
+        - containerPort: 8080
+        readinessProbe:
+          periodSeconds: 5
+          tcpSocket:
+            port: 8080
+        livenessProbe:
+          periodSeconds: 5
+          tcpSocket:
+            port: 8080
         resources:
           requests:
-            cpu: 200m
+            cpu: 100m
             memory: 64Mi
           limits:
-            cpu: 300m
+            cpu: 200m
             memory: 128Mi
-        readinessProbe:
-          initialDelaySeconds: 15
-          exec:
-            command: ["/cartservice_probe"]
-        livenessProbe:
-          initialDelaySeconds: 15
-          periodSeconds: 10
-          exec:
-            command: ["/cartservice_probe"]
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cartservice
+  name: emailservice
 spec:
   type: ClusterIP
   selector:
-    app: cartservice
+    app: emailservice
   ports:
   - name: grpc
-    port: 7070
-    targetPort: 7070
+    port: 5000
+    targetPort: 8080
