@@ -82,12 +82,18 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app: frontend
   name: frontend-external
 spec:
-  type: LoadBalancer
-  selector:
-    app: frontend
+  externalName: frontend-svc
   ports:
-  - name: http
+  - name: http-port-tcp
+    protocol: TCP
     port: 80
     targetPort: 8080
+  selector:
+    app: frontend
+  #  type: NodePort
+  # Use type loadbalancer if needed
+  type: LoadBalancer
