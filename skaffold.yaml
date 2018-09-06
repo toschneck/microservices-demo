@@ -60,3 +60,15 @@ profiles:
         projectId: loodse-sc-test
         diskSizeGb: 300
         machineType: "N1_HIGHCPU_32"
+
+### load test profile, run with:
+###    skaffold run --profile=loadtest
+  - name: loadtest
+    build:
+      artifacts:
+      - imageName: gcr.io/loodse-sc-test/loadgenerator
+        workspace: src/loadgenerator
+    deploy:
+      kubectl:
+        manifests:
+        - ./kubernetes-manifests/test/**.yaml
