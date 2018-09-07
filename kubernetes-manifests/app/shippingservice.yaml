@@ -15,17 +15,16 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: paymentservice
+  name: shippingservice
 spec:
   template:
     metadata:
       labels:
-        app: paymentservice
+        app: shippingservice
     spec:
-      terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/microservices-demo-app/paymentservice
+        image: gcr.io/loodse-sc-test/shippingservice
         ports:
         - containerPort: 50051
         readinessProbe:
@@ -47,11 +46,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: paymentservice
+  name: shippingservice
 spec:
   type: ClusterIP
   selector:
-    app: paymentservice
+    app: shippingservice
   ports:
   - name: grpc
     port: 50051
