@@ -130,10 +130,27 @@ Find **Protocol Buffers Descriptions** at the [`./pb` directory](./pb).
     browser to confirm installation.
 
         kubectl get service frontend-external
+        
+        
+### (Optional) Use Google Cloud Builder 
+> **Note:** Use this skaffold profile to build your images directly ony GCP [Cloud Builder](https://console.cloud.google.com/cloud-build/builds).
+
+1. Ensure gcloud have all needed access token:
+
+       gcloud auth application-default print-access-token`. 
+       
+2. If no access token is present create one
+ 
+       gcloud auth application-default login
+      
+3. Trigger build through CLI
+ 
+       skaffold run --profile=gcb
+  
 
 ### (Optional) Deploying load test module
 
->> **Note:** Loadtest are moved out from the normal `skaffold run` profile. 
+> **Note:** Loadtest are moved out from the normal `skaffold run` profile. 
 
 1. Ensure that all components are already deployed with by above steps.
 
