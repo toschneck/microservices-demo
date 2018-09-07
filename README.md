@@ -131,6 +131,22 @@ Find **Protocol Buffers Descriptions** at the [`./pb` directory](./pb).
 
         kubectl get service frontend-external
 
+### (Optional) Deploying load test module
+
+>> **Note:** Loadtest are moved out from the normal `skaffold run` profile. 
+
+1. Ensure that all components are already deployed with by above steps.
+
+2. Build and install the load test components. The manifest are placed under [`./kubernetes-manifests/test`](./kubernetes-manifests/test). 
+
+       skaffold run --profile=loadtest
+
+3. Open the *Stack Driver Monitoring Dashboard* and you will see the higher load
+
+4. Remove the load test components
+        
+        skaffold delete --profile=loadtest    
+
 ### (Optional) Deploying on a Istio-installed cluster
 
 > **Note:** you followed GKE deployment steps above, run `skaffold delete` first
