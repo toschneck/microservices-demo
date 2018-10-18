@@ -17,7 +17,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net"
 	"os"
 	"time"
@@ -25,6 +24,7 @@ import (
 	"cloud.google.com/go/profiler"
 	"contrib.go.opencensus.io/exporter/stackdriver"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
@@ -32,15 +32,31 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource"
 	pb "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/genproto"
 	money "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/money"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 const (
 	listenPort  = "5050"
 	usdCurrency = "USD"
 )
+
+var log *logrus.Logger
+
+func init() {
+	log = logrus.New()
+	log.Level = logrus.DebugLevel
+	log.Formatter = &logrus.JSONFormatter{
+		FieldMap: logrus.FieldMap{
+			logrus.FieldKeyTime:  "timestamp",
+			logrus.FieldKeyLevel: "severity",
+			logrus.FieldKeyMsg:   "message",
+		},
+		TimestampFormat: time.RFC3339Nano,
+	}
+	log.Out = os.Stdout
+}
 
 type checkoutService struct {
 	productCatalogSvcAddr string
@@ -68,7 +84,7 @@ func main() {
 	mustMapEnv(&svc.emailSvcAddr, "EMAIL_SERVICE_ADDR")
 	mustMapEnv(&svc.paymentSvcAddr, "PAYMENT_SERVICE_ADDR")
 
-	log.Printf("service config: %+v", svc)
+	log.Infof("service config: %+v", svc)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
@@ -76,16 +92,18 @@ func main() {
 	}
 	srv := grpc.NewServer(grpc.StatsHandler(&ocgrpc.ServerHandler{}))
 	pb.RegisterCheckoutServiceServer(srv, svc)
-	log.Printf("starting to listen on tcp: %q", lis.Addr().String())
-	log.Fatal(srv.Serve(lis))
+	healthpb.RegisterHealthServer(srv, svc)
+	log.Infof("starting to listen on tcp: %q", lis.Addr().String())
+	err = srv.Serve(lis)
+	log.Fatal(err)
 }
 
 func initStats(exporter *stackdriver.Exporter) {
 	view.RegisterExporter(exporter)
 	if err := view.Register(ocgrpc.DefaultServerViews...); err != nil {
-		log.Printf("Error registering default server views")
+		log.Warn("Error registering default server views")
 	} else {
-		log.Printf("Registered default server views");
+		log.Info("Registered default server views")
 	}
 }
 
@@ -93,25 +111,23 @@ func initTracing() {
 	// TODO(ahmetb) this method is duplicated in other microservices using Go
 	// since they are not sharing packages.
 	for i := 1; i <= 3; i++ {
-		exporter, err := stackdriver.NewExporter(stackdriver.Options{
-			MonitoredResource: monitoredresource.Autodetect(),
-		})
+		exporter, err := stackdriver.NewExporter(stackdriver.Options{})
 		if err != nil {
-			log.Printf("info: failed to initialize stackdriver exporter: %+v", err)
+			log.Infof("failed to initialize stackdriver exporter: %+v", err)
 		} else {
 			trace.RegisterExporter(exporter)
 			trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
-			log.Print("registered stackdriver tracing")
+			log.Info("registered stackdriver tracing")
 
 			// Register the views to collect server stats.
 			initStats(exporter)
 			return
 		}
 		d := time.Second * 10 * time.Duration(i)
-		log.Printf("sleeping %v to retry initializing stackdriver exporter", d)
+		log.Infof("sleeping %v to retry initializing stackdriver exporter", d)
 		time.Sleep(d)
 	}
-	log.Printf("warning: could not initialize stackdriver exporter after retrying, giving up")
+	log.Warn("could not initialize stackdriver exporter after retrying, giving up")
 }
 
 func initProfiling(service, version string) {
@@ -124,16 +140,16 @@ func initProfiling(service, version string) {
 			// ProjectID must be set if not running on GCP.
 			// ProjectID: "my-project",
 		}); err != nil {
-			log.Printf("warn: failed to start profiler: %+v", err)
+			log.Warnf("failed to start profiler: %+v", err)
 		} else {
-			log.Print("started stackdriver profiler")
+			log.Info("started stackdriver profiler")
 			return
 		}
 		d := time.Second * 10 * time.Duration(i)
-		log.Printf("sleeping %v to retry initializing stackdriver profiler", d)
+		log.Infof("sleeping %v to retry initializing stackdriver profiler", d)
 		time.Sleep(d)
 	}
-	log.Printf("warning: could not initialize stackdriver profiler after retrying, giving up")
+	log.Warn("could not initialize stackdriver profiler after retrying, giving up")
 }
 
 func mustMapEnv(target *string, envKey string) {
@@ -144,8 +160,12 @@ func mustMapEnv(target *string, envKey string) {
 	*target = v
 }
 
+func (cs *checkoutService) Check(ctx context.Context, req *healthpb.HealthCheckRequest) (*healthpb.HealthCheckResponse, error) {
+	return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_SERVING}, nil
+}
+
 func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderRequest) (*pb.PlaceOrderResponse, error) {
-	log.Printf("[PlaceOrder] user_id=%q user_currency=%q", req.UserId, req.UserCurrency)
+	log.Infof("[PlaceOrder] user_id=%q user_currency=%q", req.UserId, req.UserCurrency)
 
 	orderID, err := uuid.NewUUID()
 	if err != nil {
@@ -169,7 +189,7 @@ func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderReq
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to charge card: %+v", err)
 	}
-	log.Printf("payment went through (transaction_id: %s)", txID)
+	log.Infof("payment went through (transaction_id: %s)", txID)
 
 	shippingTrackingID, err := cs.shipOrder(ctx, req.Address, prep.cartItems)
 	if err != nil {
@@ -187,9 +207,9 @@ func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderReq
 	}
 
 	if err := cs.sendOrderConfirmation(ctx, req.Email, orderResult); err != nil {
-		log.Printf("failed to send order confirmation to %q: %+v", req.Email, err)
+		log.Warnf("failed to send order confirmation to %q: %+v", req.Email, err)
 	} else {
-		log.Printf("order confirmation email sent to %q", req.Email)
+		log.Infof("order confirmation email sent to %q", req.Email)
 	}
 	resp := &pb.PlaceOrderResponse{Order: orderResult}
 	return resp, nil

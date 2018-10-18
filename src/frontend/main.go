@@ -23,7 +23,6 @@ import (
 
 	"cloud.google.com/go/profiler"
 	"contrib.go.opencensus.io/exporter/stackdriver"
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -84,7 +83,15 @@ func main() {
 	ctx := context.Background()
 	log := logrus.New()
 	log.Level = logrus.DebugLevel
-	log.Formatter = &logrus.TextFormatter{}
+	log.Formatter = &logrus.JSONFormatter{
+		FieldMap: logrus.FieldMap{
+			logrus.FieldKeyTime:  "timestamp",
+			logrus.FieldKeyLevel: "severity",
+			logrus.FieldKeyMsg:   "message",
+		},
+		TimestampFormat: time.RFC3339Nano,
+	}
+	log.Out = os.Stdout
 
 	go initProfiling(log, "frontend", "1.0.0")
 	go initTracing(log)
@@ -154,9 +161,7 @@ func initTracing(log logrus.FieldLogger) {
 	// since they are not sharing packages.
 	for i := 1; i <= 3; i++ {
 		log = log.WithField("retry", i)
-		exporter, err := stackdriver.NewExporter(stackdriver.Options{
-			MonitoredResource: monitoredresource.Autodetect(),
-		})
+		exporter, err := stackdriver.NewExporter(stackdriver.Options{})
 		if err != nil {
 			log.Warnf("failed to initialize stackdriver exporter: %+v", err)
 		} else {
