@@ -25,7 +25,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: gcr.io/loodse-sc-test/productcatalogservice
+        image: gcr.io/loodse-workshop-11500/productcatalogservice
         ports:
         - containerPort: 3550
         readinessProbe:

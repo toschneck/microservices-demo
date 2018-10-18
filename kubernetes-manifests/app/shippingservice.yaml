@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: server
-        image: gcr.io/loodse-sc-test/shippingservice
+        image: gcr.io/loodse-workshop-11500/shippingservice
         ports:
         - containerPort: 50051
         readinessProbe:

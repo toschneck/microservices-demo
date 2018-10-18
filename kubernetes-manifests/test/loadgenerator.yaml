@@ -38,7 +38,7 @@ spec:
           value: "frontend:80"
       containers:
       - name: main
-        image: gcr.io/loodse-sc-test/loadgenerator
+        image: gcr.io/loodse-workshop-11500/loadgenerator
         env:
         - name: FRONTEND_ADDR
           value: "frontend:80"

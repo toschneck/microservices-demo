@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: gcr.io/loodse-sc-test/frontend
+          image: gcr.io/loodse-workshop-11500/frontend
           ports:
           - containerPort: 8080
           readinessProbe:

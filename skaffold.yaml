@@ -18,27 +18,27 @@ build:
   tagPolicy:
     gitCommit: {}
   artifacts:
-  - imageName: gcr.io/loodse-sc-test/emailservice
+  - imageName: gcr.io/loodse-workshop-11500/emailservice
     workspace: src/emailservice
-  - imageName: gcr.io/loodse-sc-test/productcatalogservice
+  - imageName: gcr.io/loodse-workshop-11500/productcatalogservice
     workspace: src/productcatalogservice
-  - imageName: gcr.io/loodse-sc-test/recommendationservice
+  - imageName: gcr.io/loodse-workshop-11500/recommendationservice
     workspace: src/recommendationservice
-  - imageName: gcr.io/loodse-sc-test/shippingservice
+  - imageName: gcr.io/loodse-workshop-11500/shippingservice
     workspace: src/shippingservice
-  - imageName: gcr.io/loodse-sc-test/checkoutservice
+  - imageName: gcr.io/loodse-workshop-11500/checkoutservice
     workspace: src/checkoutservice
-  - imageName: gcr.io/loodse-sc-test/paymentservice
+  - imageName: gcr.io/loodse-workshop-11500/paymentservice
     workspace: src/paymentservice
-  - imageName: gcr.io/loodse-sc-test/currencyservice
+  - imageName: gcr.io/loodse-workshop-11500/currencyservice
     workspace: src/currencyservice
-  - imageName: gcr.io/loodse-sc-test/cartservice
+  - imageName: gcr.io/loodse-workshop-11500/cartservice
     workspace: src/cartservice
-  - imageName: gcr.io/loodse-sc-test/frontend
+  - imageName: gcr.io/loodse-workshop-11500/frontend
     workspace: src/frontend
-#  - imageName: gcr.io/loodse-sc-test/loadgenerator
+#  - imageName: gcr.io/loodse-workshop-11500/loadgenerator
 #    workspace: src/loadgenerator
-  - imageName: gcr.io/loodse-sc-test/adservice
+  - imageName: gcr.io/loodse-workshop-11500/adservice
     workspace: src/adservice
 deploy:
   kubectl:
@@ -64,7 +64,7 @@ profiles:
   - name: gcb
     build:
       googleCloudBuild:
-        projectId: loodse-sc-test
+        projectId: loodse-workshop-11500
         diskSizeGb: 300
         machineType: "N1_HIGHCPU_32"
 
@@ -73,7 +73,7 @@ profiles:
   - name: loadtest
     build:
       artifacts:
-      - imageName: gcr.io/loodse-sc-test/loadgenerator
+      - imageName: gcr.io/loodse-workshop-11500/loadgenerator
         workspace: src/loadgenerator
     deploy:
       kubectl:

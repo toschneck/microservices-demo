@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: gcr.io/loodse-sc-test/checkoutservice
+          image: gcr.io/loodse-workshop-11500/checkoutservice
           ports:
           - containerPort: 5050
           readinessProbe:
