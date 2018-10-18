@@ -10,67 +10,17 @@
     "profiler",
     "trace/apiv2"
   ]
-  revision = "aad3f485ee528456e0768f20397b4d9dd941e755"
-  version = "v0.25.0"
+  revision = "c728a003b238b26cef9ab6753a5dc424b331c3ad"
+  version = "v0.27.0"
 
 [[projects]]
   name = "contrib.go.opencensus.io/exporter/stackdriver"
   packages = [
     ".",
-    "monitoredresource",
     "propagation"
   ]
-  revision = "2b93072101d466aa4120b3c23c2e1b08af01541c"
-  version = "v0.6.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/GoogleCloudPlatform/microservices-demo"
-  packages = [
-    "src/checkoutservice/genproto",
-    "src/checkoutservice/money"
-  ]
-  revision = "04c3876e94d0cce27004c8f8677f32fd959f91ff"
-
-[[projects]]
-  name = "github.com/aws/aws-sdk-go"
-  packages = [
-    "aws",
-    "aws/awserr",
-    "aws/awsutil",
-    "aws/client",
-    "aws/client/metadata",
-    "aws/corehandlers",
-    "aws/credentials",
-    "aws/credentials/ec2rolecreds",
-    "aws/credentials/endpointcreds",
-    "aws/credentials/stscreds",
-    "aws/csm",
-    "aws/defaults",
-    "aws/ec2metadata",
-    "aws/endpoints",
-    "aws/request",
-    "aws/session",
-    "aws/signer/v4",
-    "internal/sdkio",
-    "internal/sdkrand",
-    "internal/sdkuri",
-    "internal/shareddefaults",
-    "private/protocol",
-    "private/protocol/query",
-    "private/protocol/query/queryutil",
-    "private/protocol/rest",
-    "private/protocol/xml/xmlutil",
-    "service/sts"
-  ]
-  revision = "ea2d2b9a8808d0c390d966daf855a7b3b74bc44e"
-  version = "v1.15.19"
-
-[[projects]]
-  name = "github.com/go-ini/ini"
-  packages = ["."]
-  revision = "5cf292cae48347c2490ac1a58fe36735fb78df7e"
-  version = "v1.38.2"
+  revision = "37aa2801fbf0205003e15636096ebf0373510288"
+  version = "v0.5.0"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -92,13 +42,13 @@
   branch = "master"
   name = "github.com/google/pprof"
   packages = ["profile"]
-  revision = "bfbbd91e3edf426f0cd4b17cd64aab7c6d58e283"
+  revision = "e027b505a088ac3c68c339a1d7ce7724bf34538b"
 
 [[projects]]
   name = "github.com/google/uuid"
   packages = ["."]
-  revision = "064e2069ce9c359c118179501254f67d7d37ba24"
-  version = "0.2"
+  revision = "d460ce9f8df2e77fb1ba55ca87fafed96c607494"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/googleapis/gax-go"
@@ -107,9 +57,12 @@
   version = "v2.0.0"
 
 [[projects]]
-  name = "github.com/jmespath/go-jmespath"
+  digest = "1:d867dfa6751c8d7a435821ad3b736310c2ed68945d05b50fb9d23aee0540c8cc"
+  name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "0b12d6b5"
+  pruneopts = "UT"
+  revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
+  version = "v1.0.6"
 
 [[projects]]
   name = "go.opencensus.io"
@@ -126,10 +79,19 @@
     "tag",
     "trace",
     "trace/internal",
-    "trace/propagation"
+    "trace/propagation",
+    "trace/tracestate"
   ]
-  revision = "e262766cd0d230a1bb7c37281e345e465f19b41b"
-  version = "v0.14.0"
+  revision = "b11f239c032624b045c4c2bfd3d1287b4012ce89"
+  version = "v0.16.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  pruneopts = "UT"
+  revision = "0e37d006457bf46f9e6692014ba72ef82c33022c"
 
 [[projects]]
   branch = "master"
@@ -144,7 +106,7 @@
     "internal/timeseries",
     "trace"
   ]
-  revision = "faa378e6dbaed88bd8100f8bcf09939375c6e8fa"
+  revision = "26e67e76b6c3f6ce91f7c52def5af501b4e0f3a2"
 
 [[projects]]
   branch = "master"
@@ -168,7 +130,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "11551d06cbcc94edc80a0facaccbda56473c19c1"
+  revision = "1561086e645b2809fb9f8a1e2a38160bf8d53bf4"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -204,7 +166,7 @@
     "transport/grpc",
     "transport/http"
   ]
-  revision = "943e5aafc110feadee8cf71cde31afa0d1bab9f8"
+  revision = "19ff8768a5c0b8e46ea281065664787eefc24121"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -222,8 +184,8 @@
     "socket",
     "urlfetch"
   ]
-  revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
-  version = "v1.1.0"
+  revision = "ae0ab99deb4dc413a2b4bd6c8bdd0eb67f1e4d06"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -241,7 +203,7 @@
     "googleapis/rpc/status",
     "protobuf/field_mask"
   ]
-  revision = "c66870c02cf823ceb633bcd05be3c7cda29976f4"
+  revision = "c3f76f3b92d1ffa4c58a9ff842a58b8877655e0f"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -257,6 +219,7 @@
     "encoding",
     "encoding/proto",
     "grpclog",
+    "health/grpc_health_v1",
     "internal",
     "internal/backoff",
     "internal/channelz",
@@ -280,6 +243,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2a413e02dedd64f99b3065dd0ecbc9bb2a1fd5ad26b266972dc3faecc147cc55"
+  inputs-digest = "0c103e5e32d8ecdd70048b6d91e02b910e30bad54f06b230a9664f585433a669"
   solver-name = "gps-cdcl"
   solver-version = 1
