@@ -18,28 +18,28 @@ build:
   tagPolicy:
     gitCommit: {}
   artifacts:
-  - imageName: gcr.io/loodse-sc-test/emailservice
-    workspace: src/emailservice
-  - imageName: gcr.io/loodse-sc-test/productcatalogservice
-    workspace: src/productcatalogservice
-  - imageName: gcr.io/loodse-sc-test/recommendationservice
-    workspace: src/recommendationservice
-  - imageName: gcr.io/loodse-sc-test/shippingservice
-    workspace: src/shippingservice
-  - imageName: gcr.io/loodse-sc-test/checkoutservice
-    workspace: src/checkoutservice
-  - imageName: gcr.io/loodse-sc-test/paymentservice
-    workspace: src/paymentservice
-  - imageName: gcr.io/loodse-sc-test/currencyservice
-    workspace: src/currencyservice
-  - imageName: gcr.io/loodse-sc-test/cartservice
-    workspace: src/cartservice
-  - imageName: gcr.io/loodse-sc-test/frontend
-    workspace: src/frontend
-#  - imageName: gcr.io/loodse-sc-test/loadgenerator
-#    workspace: src/loadgenerator
-  - imageName: gcr.io/loodse-sc-test/adservice
-    workspace: src/adservice
+  - image: gcr.io/loodse-sc-test/emailservice
+    context: src/emailservice
+  - image: gcr.io/loodse-sc-test/productcatalogservice
+    context: src/productcatalogservice
+  - image: gcr.io/loodse-sc-test/recommendationservice
+    context: src/recommendationservice
+  - image: gcr.io/loodse-sc-test/shippingservice
+    context: src/shippingservice
+  - image: gcr.io/loodse-sc-test/checkoutservice
+    context: src/checkoutservice
+  - image: gcr.io/loodse-sc-test/paymentservice
+    context: src/paymentservice
+  - image: gcr.io/loodse-sc-test/currencyservice
+    context: src/currencyservice
+  - image: gcr.io/loodse-sc-test/cartservice
+    context: src/cartservice
+  - image: gcr.io/loodse-sc-test/frontend
+    context: src/frontend
+#  - image: gcr.io/loodse-sc-test/loadgenerator
+#    context: src/loadgenerator
+  - image: gcr.io/loodse-sc-test/adservice
+    context: src/adservice
 deploy:
   kubectl:
     manifests:
@@ -63,18 +63,18 @@ profiles:
   build:
     googleCloudBuild:
       projectId: loodse-sc-test
-        diskSizeGb: 300
-        machineType: N1_HIGHCPU_32
+      diskSizeGb: 300
+      machineType: N1_HIGHCPU_32
       timeout: 4000s
 
 ### load test profile, run with:
 ###    skaffold run --profile=loadtest
-  - name: loadtest
-    build:
-      artifacts:
-      - imageName: gcr.io/loodse-sc-test/loadgenerator
-        workspace: src/loadgenerator
-    deploy:
-      kubectl:
-        manifests:
-        - ./kubernetes-manifests/test/**.yaml
+- name: loadtest
+  build:
+    artifacts:
+    - image: gcr.io/loodse-sc-test/loadgenerator
+      context: src/loadgenerator
+  deploy:
+    kubectl:
+      manifests:
+      - ./kubernetes-manifests/test/**.yaml
